@@ -9,7 +9,7 @@ class Role(models.Model):
         return self.name
 
 # User Category Model
-class UserCategory(models.Model):
+class Category(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -43,7 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
     password = models.CharField(max_length=255)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
