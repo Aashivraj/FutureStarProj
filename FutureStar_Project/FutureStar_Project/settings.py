@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'FutureStar_Project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'futurestar',
+        'NAME': 'future_stars',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

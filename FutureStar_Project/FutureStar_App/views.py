@@ -1,291 +1,213 @@
-from django.shortcuts import render,redirect,get_object_or_404
-from django import views
-from .models import *
-from .forms import *
-from django.contrib.auth.models import User
-from django.http import HttpResponse
-from django.contrib.auth import authenticate,login,logout
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from .forms import LoginForm, UserForm, RoleForm, CategoryForm, SystemSettingsForm
+from .models import User, Role, Category, SystemSettings
 
 
+# Login View
+class LoginView(View):
+    template_name = 'login.html'
 
-# Create your views here.
-# class Login(views.View):
-#     def get(self, request, *args, **kwargs):
-#         return render(request,'login.html')
+    def get(self, request):
+        form = LoginForm()
+        return render(request, self.template_name, {'form': form})
 
-#     def post(self, request, *args, **kwargs):
-#         return render(request,'login.html')
-        
-# class Signup(views.View):
-#     def get(self, request, *args, **kwargs):
-#         return render(request,'signup.html')
-
-#     def post(self, request, *args, **kwargs):
-#         return render(request,'signup.html')
-    
-
-    
-
-def LoginFormView(request):
-    form = LoginForm(request.POST or None)
-
-  
-
-    if request.method == "POST":
-
+    def post(self, request):
+        form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password")
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect("dash")
-            else:
-               return HttpResponse("no")
-        else:
-            print("validate data")
-
-    return render(request, "login.html", {"form": form})
-
-def SignupFormView(request):
-   
-    
-
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-           
-
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
             
+            print("Password entered by user:", password)  # Print the password entered in the form
 
-            return redirect("/")
-
-        else:
-           return HttpResponse("not worjing")
-    else:
-        form = SignUpForm()
-        print("Asdhgbjsd")
-
-    return render(request, "signup.html", {"form": form})
-
-class Dashboard(views.View):
-    def get(self, request, *args, **kwargs):
-        return render(request,'index.html')
-
-    def post(self, request, *args, **kwargs):
-        return render(request,'index.html')
-        
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
+                print("Stored hashed password for the user:", user.password)  # Print the stored hashed password
+                login(request, user)
+                return redirect('home')  # Redirect to the homepage or dashboard
+            else:
+                print("Authentication failed.")  # Debugging output if authentication fails
+                return redirect('error')
+        return render(request, self.template_name, {'form': form})
 
 
-class Table(views.View):
-    def get(self, request, *args, **kwargs):
-        return render(request,'table/datatable-basic-init.html')
-    
-    
-############################################################## User CRUD ##############################################################
-class UserListView(LoginRequiredMixin, views.View):
-    def get(self, request, *args, **kwargs):
-        users = User.objects.all()
-        context = {
-            'users': users,
-        }
-        return render(request, 'table/datatable-basic-init.html', context)
+# User CRUD Views
+class UserCreateView(View):
+    template_name = 'user_form.html'
 
-class UserEditView(LoginRequiredMixin, views.View):
-    def get(self, request, pk, *args, **kwargs):
-        user = get_object_or_404(User, pk=pk)
-        form = UserChangeForm(instance=user)
-        context = {
-            'form': form,
-            'user_obj': user,
-        }
-        return render(request, 'users/user_form.html', context)
+    def get(self, request):
+        form = UserForm()
+        return render(request, self.template_name, {'form': form})
 
-    def post(self, request, pk, *args, **kwargs):
-        user = get_object_or_404(User, pk=pk)
-        form = UserChangeForm(request.POST, instance=user)
+    def post(self, request):
+        form = UserForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('user-list')
-        return render(request, 'users/user_form.html', {'form': form, 'user_obj': user})
+            return redirect('user_list')  # Redirect to the user list after successful creation
+        return render(request, self.template_name, {'form': form})
 
-class UserDeleteView(LoginRequiredMixin, views.View):
-    def get(self, request, pk, *args, **kwargs):
+
+class UserUpdateView(View):
+    template_name = 'user_form.html'
+
+    def get(self, request, pk):
         user = get_object_or_404(User, pk=pk)
-        context = {
-            'user_obj': user,
-        }
-        return render(request, 'users/user_confirm_delete.html', context)
+        form = UserForm(instance=user)
+        return render(request, self.template_name, {'form': form})
 
-    def post(self, request, pk, *args, **kwargs):
+    def post(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user_list')  # Redirect to the user list after successful update
+        return render(request, self.template_name, {'form': form})
+
+
+class UserDeleteView(View):
+    def post(self, request, pk):
         user = get_object_or_404(User, pk=pk)
         user.delete()
-        return redirect('user-list')
-
-############################################################## Category CRUD ##############################################################
-class CategoryListView(LoginRequiredMixin, views.View):
-    def get(self, request, *args, **kwargs):
-        categories = Category.objects.all()
-        context = {
-            'categories': categories,
-        }
-        return render(request, 'categories/category_list.html', context)
-
-class CategoryCreateView(LoginRequiredMixin, views.View):
-    def get(self, request, *args, **kwargs):
-        form = CategoryForm()
-        context = {
-            'form': form,
-        }
-        return render(request, 'categories/category_form.html', context)
-
-    def post(self, request, *args, **kwargs):
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('category-list')
-        return render(request, 'categories/category_form.html', {'form': form})
-
-class CategoryUpdateView(LoginRequiredMixin, views.View):
-    def get(self, request, pk, *args, **kwargs):
-        category = get_object_or_404(Category, pk=pk)
-        form = CategoryForm(instance=category)
-        context = {
-            'form': form,
-        }
-        return render(request, 'categories/category_form.html', context)
-
-    def post(self, request, pk, *args, **kwargs):
-        category = get_object_or_404(Category, pk=pk)
-        form = CategoryForm(request.POST, instance=category)
-        if form.is_valid():
-            form.save()
-            return redirect('category-list')
-        return render(request, 'categories/category_form.html', {'form': form})
-
-class CategoryDeleteView(LoginRequiredMixin, views.View):
-    def get(self, request, pk, *args, **kwargs):
-        category = get_object_or_404(Category, pk=pk)
-        context = {
-            'category': category,
-        }
-        return render(request, 'categories/category_confirm_delete.html', context)
-
-    def post(self, request, pk, *args, **kwargs):
-        category = get_object_or_404(Category, pk=pk)
-        category.delete()
-        return redirect('category-list')
+        return redirect('user_list')  # Redirect to the user list after successful deletion
 
 
+class UserListView(View):
+    template_name = 'user_list.html'
 
-############################################################## Role CRUD ##############################################################
-class RoleListView(LoginRequiredMixin, views.View):
-    def get(self, request, *args, **kwargs):
-        roles = Role.objects.all()
-        context = {
-            'roles': roles,
-        }
-        return render(request, 'roles/role_list.html', context)
+    def get(self, request):
+        users = User.objects.all()
+        return render(request, self.template_name, {'users': users})
 
-class RoleCreateView(LoginRequiredMixin, views.View):
-    def get(self, request, *args, **kwargs):
+
+# Role CRUD Views
+class RoleCreateView(View):
+    template_name = 'role_form.html'
+
+    def get(self, request):
         form = RoleForm()
-        context = {
-            'form': form,
-        }
-        return render(request, 'roles/role_form.html', context)
+        return render(request, self.template_name, {'form': form})
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         form = RoleForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('role-list')
-        return render(request, 'roles/role_form.html', {'form': form})
+            return redirect('role_list')
+        return render(request, self.template_name, {'form': form})
 
-class RoleUpdateView(LoginRequiredMixin, views.View):
-    def get(self, request, pk, *args, **kwargs):
+
+class RoleUpdateView(View):
+    template_name = 'role_form.html'
+
+    def get(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
         form = RoleForm(instance=role)
-        context = {
-            'form': form,
-        }
-        return render(request, 'roles/role_form.html', context)
+        return render(request, self.template_name, {'form': form})
 
-    def post(self, request, pk, *args, **kwargs):
+    def post(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
         form = RoleForm(request.POST, instance=role)
         if form.is_valid():
             form.save()
-            return redirect('role-list')
-        return render(request, 'roles/role_form.html', {'form': form})
+            return redirect('role_list')
+        return render(request, self.template_name, {'form': form})
 
-class RoleDeleteView(LoginRequiredMixin, views.View):
-    def get(self, request, pk, *args, **kwargs):
-        role = get_object_or_404(Role, pk=pk)
-        context = {
-            'role': role,
-        }
-        return render(request, 'roles/role_confirm_delete.html', context)
 
-    def post(self, request, pk, *args, **kwargs):
+class RoleDeleteView(View):
+    def post(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
         role.delete()
-        return redirect('role-list')
+        return redirect('role_list')
 
 
+class RoleListView(View):
+    template_name = 'role_list.html'
 
-############################################################## System Settings CRUD ##############################################################
-class SystemSettingListView(LoginRequiredMixin, views.View):
+    def get(self, request):
+        roles = Role.objects.all()
+        return render(request, self.template_name, {'roles': roles})
+
+
+# Category CRUD Views
+class CategoryCreateView(View):
+    template_name = 'category_form.html'
+
+    def get(self, request):
+        form = CategoryForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('category_list')
+        return render(request, self.template_name, {'form': form})
+
+
+class CategoryUpdateView(View):
+    template_name = 'category_form.html'
+
+    def get(self, request, pk):
+        category = get_object_or_404(Category, pk=pk)
+        form = CategoryForm(instance=category)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, pk):
+        category = get_object_or_404(Category, pk=pk)
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect('category_list')
+        return render(request, self.template_name, {'form': form})
+
+
+class CategoryDeleteView(View):
+    def post(self, request, pk):
+        category = get_object_or_404(Category, pk=pk)
+        category.delete()
+        return redirect('category_list')
+
+
+class CategoryListView(View):
+    template_name = 'category_list.html'
+
+    def get(self, request):
+        categories = Category.objects.all()
+        return render(request, self.template_name, {'categories': categories})
+
+
+# System Settings View (Assuming there's only one instance)
+class SystemSettingsUpdateView(View):
+    template_name = 'system_settings_form.html'
+
+    def get(self, request):
+        settings = SystemSettings.objects.first()
+        form = SystemSettingsForm(instance=settings)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        settings = SystemSettings.objects.first()
+        form = SystemSettingsForm(request.POST, instance=settings)
+        if form.is_valid():
+            form.save()
+            return redirect('system_settings')
+        return render(request, self.template_name, {'form': form})
+
+# Error 404 html
+class ErrorView(View):
     def get(self, request, *args, **kwargs):
-        settings = SystemSettings.objects.all()
-        context = {
-            'system_settings': settings,
-        }
-        return render(request, 'settings/systemsetting_list.html', context)
+        return render(request, "error.html")
+    
 
-class SystemSettingCreateView(LoginRequiredMixin, views.View):
+
+        return render(request, "forms/base-input.html")
+    
+class Dashboard(View):
     def get(self, request, *args, **kwargs):
-        form = SystemSettingsForm()
-        context = {
-            'form': form,
-        }
-        return render(request, 'settings/systemsetting_form.html', context)
+        return render(request,'index.html')
 
     def post(self, request, *args, **kwargs):
-        form = SystemSettingsForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('systemsetting-list')
-        return render(request, 'settings/systemsetting_form.html', {'form': form})
-
-class SystemSettingUpdateView(LoginRequiredMixin, views.View):
-    def get(self, request, pk, *args, **kwargs):
-        setting = get_object_or_404(SystemSettings, pk=pk)
-        form = SystemSettingsForm(instance=setting)
-        context = {
-            'form': form,
-        }
-        return render(request, 'settings/systemsetting_form.html', context)
-
-    def post(self, request, pk, *args, **kwargs):
-        setting = get_object_or_404(SystemSettings, pk=pk)
-        form = SystemSettingsForm(request.POST, instance=setting)
-        if form.is_valid():
-            form.save()
-            return redirect('systemsetting-list')
-        return render(request, 'settings/systemsetting_form.html', {'form': form})
-
-class SystemSettingDeleteView(LoginRequiredMixin, views.View):
-    def get(self, request, pk, *args, **kwargs):
-        setting = get_object_or_404(SystemSettings, pk=pk)
-        context = {
-            'setting': setting,
-        }
-        return render(request, 'settings/systemsetting_confirm_delete.html', context)
-
-    def post(self, request, pk, *args, **kwargs):
-        setting = get_object_or_404(SystemSettings, pk=pk)
-        setting.delete()
-        return redirect('systemsetting-list')
+        return render(request,'index.html')
+        

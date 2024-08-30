@@ -20,39 +20,7 @@ class LoginForm(forms.Form):
             }
         ))
 
-class SignUpForm(UserCreationForm):
-    username = forms.CharField(
-        widget=forms.TextInput(
-            attrs={
-                "placeholder": "Username",
-                "class": "form-control"
-            }
-        ))
-    email = forms.EmailField(
-        widget=forms.EmailInput(
-            attrs={
-                "placeholder": "Email",
-                "class": "form-control"
-            }
-        ))
-    password1 = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                "placeholder": "Password",
-                "class": "form-control"
-            }
-        ))
-    password2 = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                "placeholder": "Password check",
-                "class": "form-control"
-            }
-        ))
 
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password1', 'password2')
 
 # User Form
 class UserForm(forms.ModelForm):
@@ -70,23 +38,7 @@ class UserForm(forms.ModelForm):
             'is_staff': forms.CheckboxInput(),
         }
         
-# Simple User Change Form
-class UserChangeForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'phone', 'role', 'is_active', 'is_staff']
-        widgets = {
-            'username': forms.TextInput(attrs={'placeholder': 'Enter username'}),
-            'email': forms.EmailInput(attrs={'placeholder': 'Enter email address'}),
-            'first_name': forms.TextInput(attrs={'placeholder': 'Enter first name'}),
-            'last_name': forms.TextInput(attrs={'placeholder': 'Enter last name'}),
-            'phone': forms.TextInput(attrs={'placeholder': 'Enter phone number'}),
-            'role': forms.Select(attrs={'placeholder': 'Select role'}),
-            'is_active': forms.CheckboxInput(),
-            'is_staff': forms.CheckboxInput(),
-        }
-        
-        
+ 
 # Role Form
 class RoleForm(forms.ModelForm):
     class Meta:
