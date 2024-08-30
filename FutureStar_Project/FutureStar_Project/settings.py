@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'FutureStar_App',
     'rest_framework',
+    'sass_processor',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
