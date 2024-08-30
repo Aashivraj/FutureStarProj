@@ -74,3 +74,10 @@ class Dashboard(views.View):
     def post(self, request, *args, **kwargs):
         return render(request,'index.html')
         
+
+
+class Table(views.View):
+    def get(self, request, *args, **kwargs):
+        return render(request,'table/datatable-basic-init.html')
+
+ 

@@ -19,7 +19,8 @@ urlpatterns = [
     path('', LoginFormView,name="login"),
     path('signup/', SignupFormView,name="signup"),
 
-    path('dash/', Dashboard.as_view(),name="dash")
+    path('dash/', Dashboard.as_view(),name="dash"),
    
+    path('table/', Table.as_view(),name="table"),
 
 ]
