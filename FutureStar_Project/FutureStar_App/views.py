@@ -36,7 +36,7 @@ class LoginView(View):
 
 # User CRUD Views
 class UserCreateView(View):
-    template_name = 'user_form.html'
+    template_name = 'forms/user_form.html'
 
     def get(self, request):
         form = UserForm()
@@ -51,7 +51,7 @@ class UserCreateView(View):
 
 
 class UserUpdateView(View):
-    template_name = 'user_form.html'
+    template_name = 'forms/user_form.html'
 
     def get(self, request, pk):
         user = get_object_or_404(User, pk=pk)
@@ -68,6 +68,10 @@ class UserUpdateView(View):
 
 
 class UserDeleteView(View):
+    def get(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        user.delete()
+        return redirect('user_list') 
     def post(self, request, pk):
         user = get_object_or_404(User, pk=pk)
         user.delete()
@@ -75,7 +79,7 @@ class UserDeleteView(View):
 
 
 class UserListView(View):
-    template_name = 'user_list.html'
+    template_name = 'table/user_list_datatable.html'
 
     def get(self, request):
         users = User.objects.all()
@@ -84,7 +88,7 @@ class UserListView(View):
 
 # Role CRUD Views
 class RoleCreateView(View):
-    template_name = 'role_form.html'
+    template_name = 'forms/role_form.html'
 
     def get(self, request):
         form = RoleForm()
@@ -99,7 +103,7 @@ class RoleCreateView(View):
 
 
 class RoleUpdateView(View):
-    template_name = 'role_form.html'
+    template_name = 'forms/role_form.html'
 
     def get(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
@@ -116,6 +120,11 @@ class RoleUpdateView(View):
 
 
 class RoleDeleteView(View):
+    def get(self, request, pk):
+        role = get_object_or_404(Role, pk=pk)
+        role.delete()
+        return redirect('role_list')
+
     def post(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
         role.delete()
@@ -123,7 +132,7 @@ class RoleDeleteView(View):
 
 
 class RoleListView(View):
-    template_name = 'role_list.html'
+    template_name = 'table/role_list_datatable.html'
 
     def get(self, request):
         roles = Role.objects.all()
@@ -132,7 +141,7 @@ class RoleListView(View):
 
 # Category CRUD Views
 class CategoryCreateView(View):
-    template_name = 'category_form.html'
+    template_name = 'forms/category_form.html'
 
     def get(self, request):
         form = CategoryForm()
@@ -147,7 +156,7 @@ class CategoryCreateView(View):
 
 
 class CategoryUpdateView(View):
-    template_name = 'category_form.html'
+    template_name = 'forms/category_form.html'
 
     def get(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
@@ -164,6 +173,10 @@ class CategoryUpdateView(View):
 
 
 class CategoryDeleteView(View):
+    def get(self, request, pk):
+        category = get_object_or_404(Category, pk=pk)
+        category.delete()
+        return redirect('category_list')
     def post(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
         category.delete()
@@ -171,7 +184,7 @@ class CategoryDeleteView(View):
 
 
 class CategoryListView(View):
-    template_name = 'category_list.html'
+    template_name = 'table/category_list_datatable.html'
 
     def get(self, request):
         categories = Category.objects.all()
@@ -201,8 +214,6 @@ class ErrorView(View):
         return render(request, "error.html")
     
 
-
-        return render(request, "forms/base-input.html")
     
 class Dashboard(View):
     def get(self, request, *args, **kwargs):
