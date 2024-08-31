@@ -259,7 +259,7 @@ class System_Settings(LoginRequiredMixin,View):
         system_settings.youtube = request.POST.get('youtube')
 
         system_settings.save()
-        return redirect('Dashboard')
+        return redirect('home')
 
 # Error 404 html
 class ErrorView(View):
