@@ -21,33 +21,44 @@
             </div>
           </li>
          
-          <li class="sidebar-list"><a class="sidebar-link sidebar-title" href="#">
+          <li class="sidebar-list"><a class="sidebar-link sidebar-title link-nav" href="{% url 'user_list' %}">
+            <svg class="stroke-icon">
+              <use href="{% static 'assets/svg/icon-sprite.svg'%}#stroke-widget"></use>
+            </svg>
+            <svg class="fill-icon">
+              <use href="{% static 'assets/svg/icon-sprite.svg'%}#fill-file"></use>
+            </svg>
+            <span>users</span></a>
+          </li>
+
+          <li class="sidebar-list"><a class="sidebar-link sidebar-title link-nav" href="{% url 'system_settings' %}">
+            <svg class="stroke-icon">
+              <use href="{% static 'assets/svg/icon-sprite.svg'%}#stroke-widget"></use>
+            </svg>
+              <svg class="fill-icon">
+                <use href="{% static 'assets/svg/icon-sprite.svg'%}#fill-file"></use>
+              </svg>
+              <span>System Settings</span></a>
+            </li>
+            <li class="sidebar-list"><a class="sidebar-link sidebar-title link-nav" href="{% url 'category_list' %}">
               <svg class="stroke-icon">
                 <use href="{% static 'assets/svg/icon-sprite.svg'%}#stroke-widget"></use>
               </svg>
-              <svg class="fill-icon">
-                <use href="{% static 'assets/svg/icon-sprite.svg'%}#fill-widget"></use>
-              </svg><span class="lan-6">Widgets</span></a>
-            <ul class="sidebar-submenu">
-              <li><a href="#">General</a></li>
-              <li><a href="#">Chart</a></li>
-            </ul>
-          </li>
-         
-          
-          <li class="sidebar-main-title">
-            <div>
-              <h6 class="lan-8">Applications</h6>
-            </div>
-          </li>
-       
-          <li class="sidebar-list"><a class="sidebar-link sidebar-title link-nav" href="#">
-              <svg class="stroke-icon">
-                <use href="{% static 'assets/svg/icon-sprite.svg'%}#stroke-file"></use>
-              </svg>
-              <svg class="fill-icon">
-                <use href="{% static 'assets/svg/icon-sprite.svg'%}#fill-file"></use>
-              </svg><span>File manager</span></a></li>
+                <svg class="fill-icon">
+                  <use href="{% static 'assets/svg/icon-sprite.svg'%}#fill-file"></use>
+                </svg>
+              <span>category</span></a>
+            </li>
+
+              <li class="sidebar-list"><a class="sidebar-link sidebar-title link-nav" href="{% url 'role_list' %}">
+                <svg class="stroke-icon">
+                  <use href="{% static 'assets/svg/icon-sprite.svg'%}#stroke-widget"></use>
+                </svg>
+                <svg class="fill-icon">
+                  <use href="{% static 'assets/svg/icon-sprite.svg'%}#fill-file"></use>
+                </svg>
+                <span>Role</span></a>
+              </li>
       
         
             

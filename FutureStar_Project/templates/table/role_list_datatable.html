@@ -16,7 +16,48 @@
           
             <div class="row">
 
-                  {% include "table/role_list/role_list.html" %}
+                  <!-- Role List  -->
+                  <div class="col-sm-12">
+                        <div class="card">
+                        <div class="card-header pb-0 card-no-border">
+                        <h3>role List</h3>
+                        <span>This table lists all registered Role with options to edit or delete them.</span>
+                        </div>
+                        <div class="card-body">
+                        <div class="table-responsive">
+                              <table class="display" id="basic-1">
+                              <thead>
+                              <tr>
+                                    <th>Name</th>
+                                    <th>Actions</th>
+                              
+                              </tr>
+                              </thead>
+                              <tbody>
+                              {% for role in roles %}
+                              <tr>
+                                    <td>{{ role.name }}</td>
+                              
+                              
+                                    <td>
+                                    <ul class="action">
+                                    <li class="edit">
+                                          <a href="{% url 'role_update' user.id %}"><i class="icon-pencil-alt"></i></a>
+                                    </li>
+                                    <li class="delete">
+                                          <a href="{% url 'role_delete' user.id %}"><i class="icon-trash"></i></a>
+                                    </li>
+                                    </ul>
+                                    </td>
+                              </tr>
+                              {% endfor %}
+                              </tbody>
+                              </table>
+                        </div>
+                        </div>
+                        </div>
+                  </div>
+    
               
 
             </div>
