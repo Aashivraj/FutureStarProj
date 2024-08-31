@@ -8,6 +8,10 @@ import os
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth import get_user_model
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
 
 # Login View
 class LoginView(View):
@@ -36,57 +40,56 @@ class LoginView(View):
                 return redirect('error')
         return render(request, self.template_name, {'form': form})
 
-
-# User CRUD Views
-class UserCreateView(View):
-    template_name = 'forms/user_form.html'
-
-    def get(self, request):
-        form = UserForm()
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('user_list')  # Redirect to the user list after successful creation
-        return render(request, self.template_name, {'form': form})
-
-
-class UserUpdateView(View):
-    template_name = 'forms/user_form.html'
-
-    def get(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
-        form = UserForm(instance=user)
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
-        form = UserForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('user_list')  # Redirect to the user list after successful update
-        return render(request, self.template_name, {'form': form})
-
-
-class UserDeleteView(View):
-    def get(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
-        user.delete()
-        return redirect('user_list') 
-    def post(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
-        user.delete()
-        return redirect('user_list')  # Redirect to the user list after successful deletion
-
-
+#User Crud
 class UserListView(View):
-    template_name = 'admin/user.html'
+    template_name = 'Admin/UserList.html'
 
     def get(self, request):
+        User = get_user_model()  # Get the custom user model
         users = User.objects.all()
-        return render(request, self.template_name, {'users': users})
+        roles = Role.objects.all()
+        return render(request, self.template_name, {'users': users, 'roles': roles})
+
+class UserEditView(View):
+    def get(self, request, user_id):
+        user = get_object_or_404(get_user_model(), id=user_id)
+        roles = Role.objects.all()
+        return JsonResponse({
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'phone': user.phone,
+            'role': user.role.id if user.role else None,
+            'roles': [{'id': role.id, 'name': role.name} for role in roles]  # Include roles for the dropdown
+        })
+
+    @csrf_exempt
+    def post(self, request, user_id):
+        user = get_object_or_404(get_user_model(), id=user_id)
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.phone = request.POST.get('phone')
+        role_id = request.POST.get('role')
+        if role_id:
+            user.role = Role.objects.get(id=role_id)
+        else:
+            user.role = None
+        user.save()
+        return JsonResponse({'success': True})
+
+@csrf_exempt
+def user_delete(request, user_id):
+    if request.method == 'DELETE':
+        User = get_user_model()
+        user = get_object_or_404(User, id=user_id)
+        user.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
+
+
+
 
 
 # Role CRUD Views
