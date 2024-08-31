@@ -42,7 +42,7 @@ class LoginView(View):
 
 #User Crud
 class UserListView(View):
-    template_name = 'Admin/UserList.html'
+    template_name = 'admin/user.html'
 
     def get(self, request):
         User = get_user_model()  # Get the custom user model
@@ -77,7 +77,7 @@ class UserEditView(View):
         else:
             user.role = None
         user.save()
-        return JsonResponse({'success': True})
+        return redirect('user_list')
 
 @csrf_exempt
 def user_delete(request, user_id):
