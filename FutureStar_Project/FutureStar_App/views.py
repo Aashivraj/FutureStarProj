@@ -50,43 +50,32 @@ class UserListView(View):
         roles = Role.objects.all()
         return render(request, self.template_name, {'users': users, 'roles': roles})
 
-class UserEditView(View):
-    def get(self, request, user_id):
-        user = get_object_or_404(get_user_model(), id=user_id)
-        roles = Role.objects.all()
-        return JsonResponse({
-            'id': user.id,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'email': user.email,
-            'phone': user.phone,
-            'role': user.role.id if user.role else None,
-            'roles': [{'id': role.id, 'name': role.name} for role in roles]  # Include roles for the dropdown
-        })
+class UserUpdateView(View):
+    template_name = 'forms/user_form.html'
 
-    @csrf_exempt
-    def post(self, request, user_id):
-        user = get_object_or_404(get_user_model(), id=user_id)
-        user.first_name = request.POST.get('first_name')
-        user.last_name = request.POST.get('last_name')
-        user.email = request.POST.get('email')
-        user.phone = request.POST.get('phone')
-        role_id = request.POST.get('role')
-        if role_id:
-            user.role = Role.objects.get(id=role_id)
-        else:
-            user.role = None
-        user.save()
-        return redirect('user_list')
+    def get(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        form = UserForm(instance=user)
+        return render(request, self.template_name, {'form': form})
 
-@csrf_exempt
-def user_delete(request, user_id):
-    if request.method == 'DELETE':
-        User = get_user_model()
-        user = get_object_or_404(User, id=user_id)
+    def post(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user_list')  # Redirect to the user list after successful update
+        return render(request, self.template_name, {'form': form})
+
+
+class UserDeleteView(View):
+    def get(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
         user.delete()
-        return JsonResponse({'success': True})
-    return JsonResponse({'success': False}, status=400)
+        return redirect('user_list') 
+    def post(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        user.delete()
+        return redirect('user_list')  # Redirect to the user list after successful deletion
 
 
 

@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load sass_tags %}
 
 {% block css %}
 <!-- Plugins css start-->
-<link rel="stylesheet" type="text/css" href="{% sass_src 'assets/scss/vendors/datatables.scss' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'assets/scss/vendors/datatables.scss' %}">
 <!-- Plugins css Ends-->
 {% endblock %}
 
@@ -16,9 +15,12 @@
             <!-- User List -->
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header pb-0 card-no-border">
-                        <h3>User List</h3>
-                        <span>This table lists all registered users with options to edit or delete them.</span>
+                    <div class="card-header pb-0 card-no-border d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3>User List</h3>
+                            <span>This table lists all registered users with options to edit or delete them.</span>
+                        </div>
+                        
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -49,26 +51,13 @@
                                         {% else %}
                                             <td>None</td>
                                         {% endif %}
-                                        
                                         <td>
                                             <ul class="action">
                                                 <li class="edit">
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#editUserModal"
-                                                       data-user-id="{{ user.id }}"
-                                                       data-user-username="{{ user.username }}"
-
-                                                       data-user-first-name="{{ user.first_name }}"
-                                                       data-user-last-name="{{ user.last_name }}"
-                                                       data-user-email="{{ user.email }}"
-                                                       data-user-role="{% if user.role %}{{ user.role.id }}{% else %}''{% endif %}">
-                                                       <i class="icon-pencil-alt"></i>
-                                                    </a>
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#editUserModal" data-user-id="{{ user.id }}" data-user-username="{{ user.username }}" data-user-email="{{ user.email }}" data-user-first-name="{{ user.first_name }}" data-user-last-name="{{ user.last_name }}" data-user-phone="{{ user.phone }}" data-user-role="{{ user.role }}" data-user-is-active="{{ user.is_active }}" data-user-is-staff="{{ user.is_staff }}"><i class="icon-pencil-alt"></i></a>
                                                 </li>
                                                 <li class="delete">
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#deleteUserModal"
-                                                       data-user-id="{{ user.id }}">
-                                                       <i class="icon-trash"></i>
-                                                    </a>
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#deleteUserModal" data-user-id="{{ user.id }}"><i class="icon-trash"></i></a>
                                                 </li>
                                             </ul>
                                         </td>
@@ -93,34 +82,42 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{% url 'user_update' user_id=0 %}" id="editUserForm">
+                <form method="post" action="{% url 'user_update' pk=0 %}" id="editUserForm">
                     {% csrf_token %}
                     <input type="hidden" id="editUserId" name="id">
                     <div class="mb-3">
-                        <label for="editUsername" class="form-label">User Name</label>
-                        <input type="text" class="form-control" id="editUsername" name="username">
+                        <label for="id_username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter username">
                     </div>
                     <div class="mb-3">
-                        <label for="editFirstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="editFirstName" name="first_name">
+                        <label for="id_email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="id_email" name="email" placeholder="Enter email address">
                     </div>
                     <div class="mb-3">
-                        <label for="editLastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="editLastName" name="last_name">
+                        <label for="id_first_name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="id_first_name" name="first_name" placeholder="Enter first name">
                     </div>
                     <div class="mb-3">
-                        <label for="editEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="editEmail" name="email">
+                        <label for="id_last_name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="id_last_name" name="last_name" placeholder="Enter last name">
                     </div>
                     <div class="mb-3">
-                        <label for="editPhone" class="form-label">Phone</label>
-                        <input type="text" class="form-control" id="editPhone" name="phone">
+                        <label for="id_phone" class="form-label">Phone</label>
+                        <input type="text" class="form-control" id="id_phone" name="phone" placeholder="Enter phone number">
                     </div>
                     <div class="mb-3">
-                        <label for="editRole" class="form-label">Role</label>
-                        <select class="form-select" id="editRole" name="role">
-                            <!-- Options will be populated by JavaScript -->
+                        <label for="id_role" class="form-label">Role</label>
+                        <select class="form-control" id="id_role" name="role">
+                            <!-- Populate this with roles as needed -->
                         </select>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="id_is_active" name="is_active">
+                        <label class="form-check-label" for="id_is_active">Active</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="id_is_staff" name="is_staff">
+                        <label class="form-check-label" for="id_is_staff">Staff</label>
                     </div>
                     <button type="submit" class="btn btn-primary">Update User</button>
                 </form>
@@ -138,7 +135,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{% url 'user_delete' user_id=0 %}" id="deleteUserForm">
+                <form method="post" action="{% url 'user_delete' pk=0 %}" id="deleteUserForm">
                     {% csrf_token %}
                     <input type="hidden" id="deleteUserId" name="id">
                     <p>Are you sure you want to delete this user?</p>
@@ -156,56 +153,50 @@
 <script src="{% static 'assets/js/datatable/datatables/jquery.dataTables.min.js'%}"></script>
 <script src="{% static 'assets/js/datatable/datatables/datatable.custom.js'%}"></script>
 <script src="{% static 'assets/js/tooltip-init.js'%}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Plugins JS Ends-->
+
 <script>
-    // Edit User Modal
     document.addEventListener('DOMContentLoaded', function () {
+        // Edit User Modal
         var editUserModal = document.getElementById('editUserModal');
-        editUserModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var userId = button.getAttribute('data-user-id');
-            var userName = button.getAttribute('data-user-username');
+        if (editUserModal) {
+            editUserModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var userId = button.getAttribute('data-user-id');
+                var userUsername = button.getAttribute('data-user-username');
+                var userEmail = button.getAttribute('data-user-email');
+                var userFirstName = button.getAttribute('data-user-first-name');
+                var userLastName = button.getAttribute('data-user-last-name');
+                var userPhone = button.getAttribute('data-user-phone');
+                var userRole = button.getAttribute('data-user-role');
+                var userIsActive = button.getAttribute('data-user-is-active') === 'true';
+                var userIsStaff = button.getAttribute('data-user-is-staff') === 'true';
 
-            var firstName = button.getAttribute('data-user-first-name');
-            var lastName = button.getAttribute('data-user-last-name');
-            var email = button.getAttribute('data-user-email');
-            var phone = button.getAttribute('data-user-phone');
-            var roleId = button.getAttribute('data-user-role');
-            
-            var form = document.getElementById('editUserForm');
-            form.action = "{% url 'user_update' user_id='0' %}".replace('0', userId);
-            form.querySelector('#editUserId').value = userId;
-            form.querySelector('#editUsername').value = userName;
-
-            form.querySelector('#editFirstName').value = firstName;
-            form.querySelector('#editLastName').value = lastName;
-            form.querySelector('#editEmail').value = email;
-            form.querySelector('#editPhone').value = phone;
-            
-            // Populate the roles dropdown
-            var roleSelect = form.querySelector('#editRole');
-            roleSelect.innerHTML = '';  // Clear previous options
-            var roles = JSON.parse('{{ roles|escapejs }}');  // Pass roles from server to JavaScript
-            roles.forEach(function(role) {
-                var option = document.createElement('option');
-                option.value = role.id;
-                option.text = role.name;
-                if (role.id == roleId) {
-                    option.selected = true;
-                }
-                roleSelect.add(option);
+                var form = document.getElementById('editUserForm');
+                form.action = "{% url 'user_update' pk='0' %}".replace('0', userId);
+                form.querySelector('#editUserId').value = userId;
+                form.querySelector('#id_username').value = userUsername;
+                form.querySelector('#id_email').value = userEmail;
+                form.querySelector('#id_first_name').value = userFirstName;
+                form.querySelector('#id_last_name').value = userLastName;
+                form.querySelector('#id_phone').value = userPhone;
+                form.querySelector('#id_role').value = userRole;
+                form.querySelector('#id_is_active').checked = userIsActive;
+                form.querySelector('#id_is_staff').checked = userIsStaff;
             });
-        });
+        }
 
         // Delete User Modal
         var deleteUserModal = document.getElementById('deleteUserModal');
-        deleteUserModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var userId = button.getAttribute('data-user-id');
-            var form = document.getElementById('deleteUserForm');
-            form.action = "{% url 'user_delete' user_id='0' %}".replace('0', userId);
-            form.querySelector('#deleteUserId').value = userId;
-        });
+        if (deleteUserModal) {
+            deleteUserModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var userId = button.getAttribute('data-user-id');
+                var form = document.getElementById('deleteUserForm');
+                form.action = "{% url 'user_delete' pk='0' %}".replace('0', userId);
+                form.querySelector('#deleteUserId').value = userId;
+            });
+        }
     });
 </script>
 {% endblock %}
