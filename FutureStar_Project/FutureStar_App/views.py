@@ -79,7 +79,7 @@ class UserDeleteView(View):
 
 
 class UserListView(View):
-    template_name = 'table/user_list_datatable.html'
+    template_name = 'admin/user.html'
 
     def get(self, request):
         users = User.objects.all()
@@ -132,7 +132,7 @@ class RoleDeleteView(View):
 
 
 class RoleListView(View):
-    template_name = 'table/role_list_datatable.html'
+    template_name = 'admin/role.html'
 
     def get(self, request):
         roles = Role.objects.all()
@@ -184,7 +184,7 @@ class CategoryDeleteView(View):
 
 
 class CategoryListView(View):
-    template_name = 'table/category_list_datatable.html'
+    template_name = 'admin/category.html'
 
     def get(self, request):
         categories = Category.objects.all()
