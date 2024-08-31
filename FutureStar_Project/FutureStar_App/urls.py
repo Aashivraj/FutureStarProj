@@ -34,7 +34,7 @@ urlpatterns = [
     path('categories/update/<int:pk>/', CategoryUpdateView.as_view(), name='category_update'),
     path('categories/delete/<int:pk>/', CategoryDeleteView.as_view(), name='category_delete'),
 
-    path('System-Settings/', System_Settings.as_view(),name="System_Settings"),
+    path('system-settings/', System_Settings.as_view(),name="system_settings"),
 
 
     #error

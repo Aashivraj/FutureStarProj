@@ -204,7 +204,7 @@ class System_Settings(LoginRequiredMixin,View):
 
     def get(self, request, *args, **kwargs):
         system_settings = SystemSettings.objects.first()  # Fetch the first record
-        return render(request, 'Admin/System_Settings.html', {
+        return render(request, 'admin/system_settings.html', {
             'system_settings': system_settings,
             'MEDIA_URL': settings.MEDIA_URL,  # Pass MEDIA_URL to the template
         })
