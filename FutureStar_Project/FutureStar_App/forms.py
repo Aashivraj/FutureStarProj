@@ -81,3 +81,61 @@ class SystemSettingsForm(forms.ModelForm):
             'linkedin': forms.URLInput(attrs={'placeholder': 'LinkedIn URL'}),
             'youtube': forms.URLInput(attrs={'placeholder': 'YouTube URL'}),
         }
+
+
+# Gender Form
+class GenderForm(forms.ModelForm):
+    class Meta:
+        model = UserGender
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter UserGender'}),
+        }
+
+
+# GameType Form
+class GameTypeForm(forms.ModelForm):
+    class Meta:
+        model = GameType
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter GameType'}),
+        }
+
+
+# Field Capacity Form
+class FieldCapacityForm(forms.ModelForm):
+    class Meta:
+        model = FieldCapacity
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter Field Capacity'}),
+        }
+
+
+# Ground Material Form
+class GroundMaterialForm(forms.ModelForm):
+    class Meta:
+        model = GroundMaterial
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter Ground Material'}),
+        }
+
+# Tournament Style Form
+class TournamentStyleForm(forms.ModelForm):
+    class Meta:
+        model = TournamentStyle
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter Tournament Style'}),
+        }
+
+# Event Type Style Form
+class EventTypeForm(forms.ModelForm):
+    class Meta:
+        model = EventType
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter Event Type'}),
+        }

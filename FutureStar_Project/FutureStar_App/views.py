@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.views import View
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .forms import LoginForm, UserForm, RoleForm, CategoryForm, SystemSettingsForm
-from .models import User, Role, Category, SystemSettings
+from .forms import *
+from .models import *
 import os
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
@@ -381,3 +381,344 @@ class ToggleUserStatusView(View):
         user.save()
 
         return redirect('user_list')
+    
+# Gender CRUD Views
+class GenderCreateView(LoginRequiredMixin,View):
+    template_name = 'forms/gender_form.html'
+
+    def get(self, request):
+        form = GenderForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = GenderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Gender created successfully.')
+            return redirect('gender_list')
+        messages.error(request, 'There was an error creating the gender. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class GenderUpdateView(LoginRequiredMixin,View):
+    template_name = 'forms/gender_form.html'
+
+    def get(self, request, pk):
+        gender = get_object_or_404(UserGender, pk=pk)
+        form = GenderForm(instance=gender)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, pk):
+        gender = get_object_or_404(UserGender, pk=pk)
+        form = GenderForm(request.POST, instance=gender)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Gender was successfully updated.')
+            return redirect('gender_list')
+        messages.error(request, 'There was an error updating the gender. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class GenderDeleteView(LoginRequiredMixin,View):
+    def get(self, request, pk):
+        gender = get_object_or_404(UserGender, pk=pk)
+        gender.delete()
+        messages.success(request, 'Gender was successfully deleted.')
+        return redirect('gender_list')
+
+    def post(self, request, pk):
+        gender = get_object_or_404(UserGender, pk=pk)
+        gender.delete()
+        messages.success(request, 'Gender was successfully deleted.')
+        return redirect('gender_list')
+
+class GenderListView(LoginRequiredMixin,View):
+    template_name = 'Admin/General_Settings/Gender.html'
+
+    def get(self, request):
+        genders = UserGender.objects.all()
+        return render(request, self.template_name, {'genders': genders})
+    
+
+
+
+# GameType CRUD Views
+class GameTypeCreateView(LoginRequiredMixin, View):
+    template_name = 'forms/gametype_form.html'
+
+    def get(self, request):
+        form = GameTypeForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = GameTypeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Game type created successfully.')
+            return redirect('gametype_list')
+        messages.error(request, 'There was an error creating the game type. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class GameTypeUpdateView(LoginRequiredMixin, View):
+    template_name = 'forms/gametype_form.html'
+
+    def get(self, request, pk):
+        gametype = get_object_or_404(GameType, pk=pk)
+        form = GameTypeForm(instance=gametype)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, pk):
+        gametype = get_object_or_404(GameType, pk=pk)
+        form = GameTypeForm(request.POST, instance=gametype)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Game type was successfully updated.')
+            return redirect('gametype_list')
+        messages.error(request, 'There was an error updating the game type. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class GameTypeDeleteView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        gametype = get_object_or_404(GameType, pk=pk)
+        gametype.delete()
+        messages.success(request, 'Game type was successfully deleted.')
+        return redirect('gametype_list')
+
+    def post(self, request, pk):
+        gametype = get_object_or_404(GameType, pk=pk)
+        gametype.delete()
+        messages.success(request, 'Game type was successfully deleted.')
+        return redirect('gametype_list')
+
+class GameTypeListView(LoginRequiredMixin, View):
+    template_name = 'Admin/General_Settings/GameType.html'
+
+    def get(self, request):
+        gametypes = GameType.objects.all()
+        return render(request, self.template_name, {'gametypes': gametypes})
+
+
+
+# fieldcapacity CRUD Views
+class FieldCapacityCreateView(LoginRequiredMixin, View):
+    template_name = 'forms/fieldcapacity_form.html'
+
+    def get(self, request):
+        form = FieldCapacityForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = FieldCapacityForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Field Capacity created successfully.')
+            return redirect('fieldcapacity_list')
+        messages.error(request, 'There was an error creating the Field Capacity. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class FieldCapacityUpdateView(LoginRequiredMixin, View):
+    template_name = 'forms/fieldcapacity_form.html'
+
+    def get(self, request, pk):
+        fieldcapacity = get_object_or_404(FieldCapacity, pk=pk)
+        form = FieldCapacityForm(instance=fieldcapacity)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, pk):
+        fieldcapacity = get_object_or_404(FieldCapacity, pk=pk)
+        form = FieldCapacityForm(request.POST, instance=fieldcapacity)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Field Capacity updated successfully.')
+            return redirect('fieldcapacity_list')
+        messages.error(request, 'There was an error updating the game type. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class FieldCapacityDeleteView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        fieldcapacity = get_object_or_404(FieldCapacity, pk=pk)
+        fieldcapacity.delete()
+        messages.success(request, 'Field Capacity successfully deleted.')
+        return redirect('fieldcapacity_list')
+
+    def post(self, request, pk):
+        fieldcapacity = get_object_or_404(FieldCapacity, pk=pk)
+        fieldcapacity.delete()
+        messages.success(request, 'Field Capacity successfully deleted.')
+        return redirect('fieldcapacity_list')
+
+class FieldCapacityListView(LoginRequiredMixin, View):
+    template_name = 'Admin/General_Settings/FieldCapacity.html'
+
+    def get(self, request):
+        fieldcapacitys = FieldCapacity.objects.all()
+        return render(request, self.template_name, {'fieldcapacitys': fieldcapacitys})
+    
+
+
+# GroundMaterials CRUD Views
+class GroundMaterialCreateView(LoginRequiredMixin, View):
+    template_name = 'forms/groundmaterial_form.html'
+
+    def get(self, request):
+        form = GroundMaterialForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = GroundMaterialForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Field Capacity created successfully.')
+            return redirect('groundmaterial_list')
+        messages.error(request, 'There was an error creating the Field Capacity. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class GroundMaterialUpdateView(LoginRequiredMixin, View):
+    template_name = 'forms/groundmaterial_form.html'
+
+    def get(self, request, pk):
+        groundmaterial = get_object_or_404(GroundMaterial, pk=pk)
+        form = GroundMaterialForm(instance=groundmaterial)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, pk):
+        groundmaterial = get_object_or_404(GroundMaterial, pk=pk)
+        form = GroundMaterialForm(request.POST, instance=groundmaterial)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Field Capacity updated successfully.')
+            return redirect('groundmaterial_list')
+        messages.error(request, 'There was an error updating the game type. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class GroundMaterialDeleteView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        groundmaterial = get_object_or_404(GroundMaterial, pk=pk)
+        groundmaterial.delete()
+        messages.success(request, 'Field Capacity successfully deleted.')
+        return redirect('groundmaterial_list')
+
+    def post(self, request, pk):
+        groundmaterial = get_object_or_404(GroundMaterial, pk=pk)
+        groundmaterial.delete()
+        messages.success(request, 'Field Capacity successfully deleted.')
+        return redirect('groundmaterial_list')
+
+class GroundMaterialListView(LoginRequiredMixin, View):
+    template_name = 'Admin/General_Settings/GroundMaterial.html'
+
+    def get(self, request):
+        groundmaterials = GroundMaterial.objects.all()
+        return render(request, self.template_name, {'groundmaterials': groundmaterials})
+    
+
+
+# Tournament Style CRUD Views
+class TournamentStyleCreateView(LoginRequiredMixin, View):
+    template_name = 'forms/tournamentstyle_form.html'
+
+    def get(self, request):
+        form = TournamentStyleForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = TournamentStyleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Field Capacity created successfully.')
+            return redirect('tournamentstyle_list')
+        messages.error(request, 'There was an error creating the Field Capacity. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class TournamentStyleUpdateView(LoginRequiredMixin, View):
+    template_name = 'forms/tournamentstyle_form.html'
+
+    def get(self, request, pk):
+        tournamentstyle = get_object_or_404(TournamentStyle, pk=pk)
+        form = TournamentStyleForm(instance=tournamentstyle)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, pk):
+        tournamentstyle = get_object_or_404(TournamentStyle, pk=pk)
+        form = TournamentStyleForm(request.POST, instance=tournamentstyle)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Field Capacity updated successfully.')
+            return redirect('tournamentstyle_list')
+        messages.error(request, 'There was an error updating the game type. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class TournamentStyleDeleteView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        tournamentstyle = get_object_or_404(TournamentStyle, pk=pk)
+        tournamentstyle.delete()
+        messages.success(request, 'Field Capacity successfully deleted.')
+        return redirect('tournamentstyle_list')
+
+    def post(self, request, pk):
+        tournamentstyle = get_object_or_404(TournamentStyle, pk=pk)
+        tournamentstyle.delete()
+        messages.success(request, 'Field Capacity successfully deleted.')
+        return redirect('tournamentstyle_list')
+
+class TournamentStyleListView(LoginRequiredMixin, View):
+    template_name = 'Admin/General_Settings/TournamentStyle.html'
+
+    def get(self, request):
+        tournamentstyles = TournamentStyle.objects.all()
+        return render(request, self.template_name, {'tournamentstyles': tournamentstyles})
+
+
+
+# Event Type CRUD Views
+class EventTypeCreateView(LoginRequiredMixin, View):
+    template_name = 'forms/eventtype_form.html'
+
+    def get(self, request):
+        form = EventTypeForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = EventTypeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Field Capacity created successfully.')
+            return redirect('eventtype_list')
+        messages.error(request, 'There was an error creating the Field Capacity. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class EventTypeUpdateView(LoginRequiredMixin, View):
+    template_name = 'forms/eventtype_form.html'
+
+    def get(self, request, pk):
+        eventtype = get_object_or_404(EventType, pk=pk)
+        form = EventTypeForm(instance=eventtype)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, pk):
+        eventtype = get_object_or_404(EventType, pk=pk)
+        form = EventTypeForm(request.POST, instance=eventtype)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Field Capacity updated successfully.')
+            return redirect('eventtype_list')
+        messages.error(request, 'There was an error updating the game type. Please ensure all fields are filled out correctly.')
+        return render(request, self.template_name, {'form': form})
+
+class EventTypeDeleteView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        eventtype = get_object_or_404(EventType, pk=pk)
+        eventtype.delete()
+        messages.success(request, 'Field Capacity successfully deleted.')
+        return redirect('eventtype_list')
+
+    def post(self, request, pk):
+        eventtype = get_object_or_404(EventType, pk=pk)
+        eventtype.delete()
+        messages.success(request, 'Field Capacity successfully deleted.')
+        return redirect('eventtype_list')
+
+class EventTypeListView(LoginRequiredMixin, View):
+    template_name = 'Admin/General_Settings/EventType.html'
+
+    def get(self, request):
+        eventtypes = EventType.objects.all()
+        return render(request, self.template_name, {'eventtypes': eventtypes})

@@ -43,6 +43,44 @@ urlpatterns = [
     path('home/', Dashboard.as_view(),name="home"),
 
 
+#Gender Role URL
+    path('gender/', GenderListView.as_view(), name='gender_list'),
+    path('gender/create/', GenderCreateView.as_view(), name='gender_create'),
+    path('gender/update/<int:pk>/', GenderUpdateView.as_view(), name='gender_update'),
+    path('gender/delete/<int:pk>/', GenderDeleteView.as_view(), name='gender_delete'),
+
+
+    # GameType URL
+    path('gametype/', GameTypeListView.as_view(), name='gametype_list'),
+    path('gametype/create/', GameTypeCreateView.as_view(), name='gametype_create'),
+    path('gametype/update/<int:pk>/', GameTypeUpdateView.as_view(), name='gametype_update'),
+    path('gametype/delete/<int:pk>/', GameTypeDeleteView.as_view(), name='gametype_delete'),
+
+    # FieldCapacity URL
+    path('fieldcapacity/', FieldCapacityListView.as_view(), name='fieldcapacity_list'),
+    path('fieldcapacity/create/', FieldCapacityCreateView.as_view(), name='fieldcapacity_create'),
+    path('fieldcapacity/update/<int:pk>/', FieldCapacityUpdateView.as_view(), name='fieldcapacity_update'),
+    path('fieldcapacity/delete/<int:pk>/', FieldCapacityDeleteView.as_view(), name='fieldcapacity_delete'),
+
+    # Ground Materials URL
+    path('groundmaterial/', GroundMaterialListView.as_view(), name='groundmaterial_list'),
+    path('groundmaterial/create/', GroundMaterialCreateView.as_view(), name='groundmaterial_create'),
+    path('groundmaterial/update/<int:pk>/', GroundMaterialUpdateView.as_view(), name='groundmaterial_update'),
+    path('groundmaterial/delete/<int:pk>/', GroundMaterialDeleteView.as_view(), name='groundmaterial_delete'),
+
+    # Tournament Style URL
+    path('tournamentstyle/', TournamentStyleListView.as_view(), name='tournamentstyle_list'),
+    path('tournamentstyle/create/', TournamentStyleCreateView.as_view(), name='tournamentstyle_create'),
+    path('tournamentstyle/update/<int:pk>/', TournamentStyleUpdateView.as_view(), name='tournamentstyle_update'),
+    path('tournamentstyle/delete/<int:pk>/', TournamentStyleDeleteView.as_view(), name='tournamentstyle_delete'),
+
+    # Event Type URL
+    path('eventtype/', EventTypeListView.as_view(), name='eventtype_list'),
+    path('eventtype/create/', EventTypeCreateView.as_view(), name='eventtype_create'),
+    path('eventtype/update/<int:pk>/', EventTypeUpdateView.as_view(), name='eventtype_update'),
+    path('eventtype/delete/<int:pk>/', EventTypeDeleteView.as_view(), name='eventtype_delete'),
+
+
 
 
 

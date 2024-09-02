@@ -99,13 +99,13 @@ class GameType(models.Model):
     
 # Field Capacity  Model
 class FieldCapacity(models.Model):
-    number = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.number
+        return self.name
     
 # Ground Materials Model
-class GroundMaterials(models.Model):
+class GroundMaterial(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -119,7 +119,7 @@ class TournamentStyle(models.Model):
         return self.name
     
 # Event Types Model
-class EventTypes(models.Model):
+class EventType(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):

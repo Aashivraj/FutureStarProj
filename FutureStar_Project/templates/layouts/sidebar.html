@@ -68,6 +68,37 @@
                   </a>
                   </a>
                </li>
+               <li class="sidebar-list">
+                  <a class="sidebar-link sidebar-title" href="#">
+                     <svg class="stroke-icon">
+                        <use href="{% static 'assets/svg/icon-sprite.svg'%}#stroke-widget"></use>
+                     </svg>
+                     <svg class="fill-icon">
+                        <use href="{% static 'assets/svg/icon-sprite.svg'%}#fill-widget"></use>
+                     </svg>
+                     <span class="lan">General Settings</span>
+                  </a>
+                  <ul class="sidebar-submenu">
+                     <li>
+                        <a href="{% url 'gender_list' %}">User Gender</a>
+                     </li>
+                     <li>
+                        <a href="{% url 'gametype_list' %}">Game Type</a>
+                     </li>
+                     <li>
+                        <a href="{% url 'fieldcapacity_list' %}">Field Capacity</a>
+                     </li>
+                     <li>
+                        <a href="{% url 'groundmaterial_list' %}">Ground Material</a>
+                     </li>
+                     <li>
+                        <a href="{% url 'tournamentstyle_list' %}">Tournament Style</a>
+                     </li>
+                     <li>
+                        <a href="{% url 'eventtype_list' %}">Event Type</a>
+                     </li>
+                  </ul>
+               </li>
             </ul>
          </div>
          <div class="right-arrow" id="right-arrow">
