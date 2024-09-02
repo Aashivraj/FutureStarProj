@@ -19,7 +19,7 @@
             <div class="card-header">
                 <h5>System Settings</h5>
             </div>
-            <form class="form theme-form" method="post" enctype="multipart/form-data">
+            <form class="form theme-form" method="post" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
                 <div class="card-body">
                     <div class="row">
@@ -152,6 +152,8 @@
 {% endblock %}
 
 {% block scriptcontent %}
+{% include 'layouts/messages.html' %}
+
 
 {% endblock %}
 {% block script %}
