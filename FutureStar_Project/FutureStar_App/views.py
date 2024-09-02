@@ -2,6 +2,7 @@ import re
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.views import View
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -352,3 +353,31 @@ class Dashboard(View):
     def post(self, request, *args, **kwargs):
         return render(request,'index.html')
         
+class ToggleUserStatusView(View):
+    def post(self, request, pk, *args, **kwargs):
+        user = get_object_or_404(User, pk=pk)
+        new_status = request.POST.get('status')
+
+        # Check if the user is a superuser
+        if user.is_superuser:
+            messages.error(request, 'Superuser status cannot be changed.')
+            return redirect('user_list')
+
+        # Check if the current user is trying to deactivate their own account
+        if user == request.user and new_status == 'deactivate':
+            messages.info(request, 'Your account has been deactivated. Please log in again.')
+            user.is_active = False
+            user.save()
+            return redirect(reverse('login'))
+
+        # Update the user's status
+        if new_status == 'activate':
+            user.is_active = True
+            messages.success(request, f'{user.username} has been activated.')
+        elif new_status == 'deactivate':
+            user.is_active = False
+            messages.success(request, f'{user.username} has been deactivated.')
+
+        user.save()
+
+        return redirect('user_list')
