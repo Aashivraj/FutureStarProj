@@ -73,3 +73,54 @@ class SystemSettings(models.Model):
 
     def __str__(self):
         return self.website_name_english
+
+
+
+
+
+
+
+############################################################# Models for visualizations ############################################################# 
+
+
+# gender Model
+class UserGender(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+    
+# Game Type  Model
+class GameType(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+    
+# Field Capacity  Model
+class FieldCapacity(models.Model):
+    number = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.number
+    
+# Ground Materials Model
+class GroundMaterials(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+    
+# Tournamebt Style Model
+class TournamentStyle(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+    
+# Event Types Model
+class EventTypes(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
