@@ -1,7 +1,8 @@
 from django import forms
 from .models import *
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-
+from django.contrib.auth.forms import PasswordChangeForm 
+from django.contrib.auth.models import User as AuthUser
+from django.contrib.auth import password_validation
 
 
 class LoginForm(forms.Form):
@@ -81,6 +82,46 @@ class SystemSettingsForm(forms.ModelForm):
             'linkedin': forms.URLInput(attrs={'placeholder': 'LinkedIn URL'}),
             'youtube': forms.URLInput(attrs={'placeholder': 'YouTube URL'}),
         }
+#user_profile
+class UserUpdateProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email', 'phone', 'role']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+            field.required = False
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        label=("Old password"),
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "autocomplete": "current-password",
+                "autofocus": True,
+                "class": "form-control",
+            }
+        ),
+    )
+    new_password1 = forms.CharField(
+        label=("New password"),
+        widget=forms.PasswordInput(
+            attrs={"autocomplete": "new-password", "class": "form-control"}
+        ),
+        strip=False,
+        help_text=password_validation.password_validators_help_text_html(),  # type: ignore
+    )
+    new_password2 = forms.CharField(
+        label=("New password confirmation"),
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={"autocomplete": "new-password", "class": "form-control"}
+        ),
+    )
+    
 
 
 # Gender Form

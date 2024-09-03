@@ -2,9 +2,9 @@ import re
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from .forms import *
 from .models import *
@@ -13,8 +13,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth import get_user_model
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth import update_session_auth_hash
 
 
 # Login View
@@ -381,7 +382,61 @@ class ToggleUserStatusView(View):
         user.save()
 
         return redirect('user_list')
+
+
+#user_profile
+
+class UserProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        user = request.user
+        return render(request, 'forms/user_profile.html', {'user': user})
     
+
+@method_decorator(login_required, name='dispatch')
+class UserUpdateProfileView(View):
+    def get(self, request, *args, **kwargs):
+        form = UserUpdateProfileForm(instance=request.user)
+        password_change_form = CustomPasswordChangeForm(user=request.user)
+        return render(request, 'forms/edit_profile.html', {'form': form,'password_change_form':password_change_form})
+
+    def post(self, request, *args, **kwargs):
+        form = UserUpdateProfileForm(request.POST, instance=request.user)
+        password_change_form = CustomPasswordChangeForm(request.POST, instance=request.user)
+       
+        if form.is_valid():
+            form.save()
+            return redirect('edit_profile')  # Redirect to the profile page or wherever you want
+        return render(request, 'forms/edit_profile.html', {'form': form,'password_change_form':password_change_form})
+    
+
+class ChangePasswordView(LoginRequiredMixin, View):
+    form_class = CustomPasswordChangeForm
+    template_name = "admin_templates/change_password.html"
+    success_url = reverse_lazy('login')  # Ensure this is the name of your login URL
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(user=request.user)
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            logout(request)  # Log the user out
+            request.session.flush()  # Clear the session
+
+            # Clear cookies
+            response = redirect(self.success_url)
+            response.delete_cookie('sessionid')  # Replace 'sessionid' with your session cookie name if different
+            response.delete_cookie('csrftoken')  # If you want to clear the CSRF token cookie as well
+
+            messages.success(request, "Your password has been changed successfully. Please log in again.")
+            print("Redirecting to login page")  # Debug statement
+            return response
+        else:
+            messages.error(request, "Please correct the errors below.")
+            return render(request, self.template_name, {"form": form})
+
 # Gender CRUD Views
 class GenderCreateView(LoginRequiredMixin,View):
     template_name = 'forms/gender_form.html'

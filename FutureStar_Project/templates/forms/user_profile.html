@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="user-profile">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card hovercard text-center overflow-hidden">
+                        <div class="cardheader"></div>
+                        <div class="user-image">
+                            <div class="avatar"><img alt="" src="{% static 'assets/images/user/7.jpg' %}"></div>
+                            <a href="#" class="icon-wrapper"><i class="icofont icofont-pencil-alt-5"></i></a>
+                        </div>
+                        <div class="info">
+                            <div class="row">
+                                <div class="col-sm-6 col-lg-4">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="ttl-info text-start">
+                                                <h6><i class="fa fa-envelope"></i> Email</h6>
+                                                <span>{{ user.email }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="ttl-info text-start">
+                                                <h6><i class="fa fa-calendar"></i> Username</h6>
+                                                <span>{{user.username}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-lg-4">
+                                    <div class="user-designation">
+                                        <div class="title"><a href="">{{ user.get_full_name }}</a></div>
+                                        <div class="desc">{{ user.role }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-4">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="ttl-info text-start">
+                                                <h6><i class="fa fa-phone"></i> Contact Us</h6>
+                                                <span>{{ user.phone }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <!-- Add additional user info as needed -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
