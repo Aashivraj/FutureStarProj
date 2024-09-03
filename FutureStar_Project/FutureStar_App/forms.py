@@ -86,13 +86,14 @@ class SystemSettingsForm(forms.ModelForm):
 class UserUpdateProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'phone', 'role']
+        fields = ['first_name', 'last_name', 'username', 'email', 'phone', 'role', 'profile_picture', 'card_header']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
             field.required = False
+
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
@@ -123,10 +124,6 @@ class CustomPasswordChangeForm(PasswordChangeForm):
     )
     
 
-# class UserProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = User
-#         fields = ['profile_picture','card_header'] 
 
 
 # Gender Form

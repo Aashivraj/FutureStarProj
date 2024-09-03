@@ -388,13 +388,14 @@ class ToggleUserStatusView(View):
 class UserProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        
+       
         return render(request, 'forms/user_profile.html', {'user': user})
 
     def post(self, request):
         user = request.user
-      
-        return render(request, 'forms/user_profile.html', {'user': user})
+     
+        return render(request, 'forms/user_profile.html', {'user': user} )
+
 @method_decorator(login_required, name='dispatch')
 class UserUpdateProfileView(View):
     def get(self, request, *args, **kwargs):
@@ -411,14 +412,13 @@ class UserUpdateProfileView(View):
             password_change_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
             if password_change_form.is_valid():
                 user = password_change_form.save()
-                update_session_auth_hash(request, user)  # Keeps the user logged in after password change
+                update_session_auth_hash(request, user)
                 messages.success(request, "Your password has been changed successfully. Please log in again.")
-                return redirect('login')  # Redirect to login or wherever you want
+                return redirect('login')
             else:
                 for field in password_change_form:
                     for error in field.errors:
-                        messages.error(request, error)  # Display individual field errors
-                # Reinitialize form to repopulate data
+                        messages.error(request, error)
                 form = UserUpdateProfileForm(instance=request.user)
                 return render(request, 'forms/edit_profile.html', {
                     'form': form,
@@ -426,16 +426,29 @@ class UserUpdateProfileView(View):
                 })
         else:
             # Handle profile update
-            form = UserUpdateProfileForm(request.POST, instance=request.user, files=request.FILES)
+            user = request.user
+            old_profile_picture = user.profile_picture 
+            old_card_header=user.card_header # Assuming `profile_picture` is a field in your User model
+            form = UserUpdateProfileForm(request.POST, instance=user, files=request.FILES)
             if form.is_valid():
-                form.save()
+                if 'profile_picture' in request.FILES and old_profile_picture:
+                    # Remove the old image if a new one is uploaded
+                    old_image_path = os.path.join(settings.MEDIA_ROOT, str(old_profile_picture))
+                    if os.path.isfile(old_image_path):
+                        os.remove(old_image_path)
+                if 'card_header' in request.FILES and old_profile_picture:
+                    # Remove the old image if a new one is uploaded
+                    old_image_path = os.path.join(settings.MEDIA_ROOT, str(old_card_header))
+                    if os.path.isfile(old_image_path):
+                        os.remove(old_image_path)
+
+                user = form.save()
                 messages.success(request, "Your profile has been updated successfully.")
-                return redirect('edit_profile')  # Redirect to the profile page or wherever you want
+                return redirect('edit_profile')
             else:
                 for field in form:
                     for error in field.errors:
-                        messages.error(request, error)  # Display individual field errors
-                # Reinitialize password change form to repopulate data
+                        messages.error(request, error)
                 password_change_form = CustomPasswordChangeForm(user=request.user)
                 return render(request, 'forms/edit_profile.html', {
                     'form': form,
