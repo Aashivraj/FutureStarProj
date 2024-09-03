@@ -23,7 +23,7 @@ urlpatterns = [
     path('users/<int:pk>/edit/', UserUpdateView.as_view(), name='user_update'),
     path('users/<int:pk>/delete/', UserDeleteView.as_view(), name='user_delete'),
     path('user/<int:pk>/toggle-status/', ToggleUserStatusView.as_view(), name='user_toggle_status'),
-    path('user_profile',UserProfileView.as_view(),name='user_profile'),
+    path('user_profile/',UserProfileView.as_view(),name='user_profile'),
     path('edit_profile/', UserUpdateProfileView.as_view(), name='edit_profile'),
     path('change_password/', ChangePasswordView.as_view(), name='change_password'),
 

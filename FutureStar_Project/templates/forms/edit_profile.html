@@ -19,7 +19,8 @@
                         <h4>Update Profile</h4>
                     </div>
                     <div class="card-body">
-                        <form method="post" enctype="multipart/form-data">
+                        <!-- Profile Update Form -->
+                        <form method="post" enctype="multipart/form-data" action="{% url 'edit_profile' %}">
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col-md-6">
@@ -82,12 +83,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <!-- Password Change Form -->
                 <form method="post" action="{% url 'edit_profile' %}">
                     {% csrf_token %}
                     {{ password_change_form.as_p }}
-                    {% if password_change_errors %}
+                    {% if password_change_form.errors %}
                         <div class="text-danger">
-                            {% for field, errors in password_change_errors.items %}
+                            {% for field, errors in password_change_form.errors.items %}
                                 {% for error in errors %}
                                     <p>{{ error }}</p>
                                 {% endfor %}
@@ -96,7 +98,7 @@
                     {% endif %}
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" name="change_password" class="btn btn-primary">Change Password</button>
+                        <button type="submit" class="btn btn-primary" name="change_password">Change Password</button>
                     </div>
                 </form>
             </div>

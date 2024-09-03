@@ -385,30 +385,50 @@ class ToggleUserStatusView(View):
 
 
 #user_profile
-
 class UserProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        return render(request, 'forms/user_profile.html', {'user': user})
-    
+        form = UserProfileForm(instance=user)
+        return render(request, 'forms/user_profile.html', {'user': user, 'form': form})
 
+    def post(self, request):
+        user = request.user
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user_profile')  # Redirect to the profile page after saving
+        return render(request, 'forms/user_profile.html', {'user': user, 'form': form})
 @method_decorator(login_required, name='dispatch')
 class UserUpdateProfileView(View):
     def get(self, request, *args, **kwargs):
         form = UserUpdateProfileForm(instance=request.user)
         password_change_form = CustomPasswordChangeForm(user=request.user)
-        return render(request, 'forms/edit_profile.html', {'form': form,'password_change_form':password_change_form})
+        return render(request, 'forms/edit_profile.html', {'form': form, 'password_change_form': password_change_form})
 
     def post(self, request, *args, **kwargs):
-        form = UserUpdateProfileForm(request.POST, instance=request.user)
-        password_change_form = CustomPasswordChangeForm(request.POST, instance=request.user)
-       
-        if form.is_valid():
-            form.save()
-            return redirect('edit_profile')  # Redirect to the profile page or wherever you want
-        return render(request, 'forms/edit_profile.html', {'form': form,'password_change_form':password_change_form})
-    
-
+        if 'change_password' in request.POST:
+            # Handle password change
+            password_change_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+            if password_change_form.is_valid():
+                user = password_change_form.save()
+                update_session_auth_hash(request, user)  # Keeps the user logged in after password change
+                messages.success(request, "Your password has been changed successfully. Please log in again.")
+                return redirect('login')  # Redirect to login or wherever you want
+            else:
+                messages.error(request, "Please correct the errors in the password change form.")
+                form = UserUpdateProfileForm(instance=request.user)  # Reinitialize form to repopulate data
+                return render(request, 'forms/edit_profile.html', {'form': form, 'password_change_form': password_change_form})
+        else:
+            # Handle profile update
+            form = UserUpdateProfileForm(request.POST, instance=request.user, files=request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Your profile has been updated successfully.")
+                return redirect('edit_profile')  # Redirect to the profile page or wherever you want
+            else:
+                messages.error(request, "Please correct the errors in the profile form.")
+                password_change_form = CustomPasswordChangeForm(user=request.user)  # Reinitialize form to repopulate data
+                return render(request, 'forms/edit_profile.html', {'form': form, 'password_change_form': password_change_form})
 class ChangePasswordView(LoginRequiredMixin, View):
     form_class = CustomPasswordChangeForm
     template_name = "admin_templates/change_password.html"
