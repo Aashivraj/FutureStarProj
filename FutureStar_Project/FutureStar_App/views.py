@@ -403,7 +403,10 @@ class UserUpdateProfileView(View):
     def get(self, request, *args, **kwargs):
         form = UserUpdateProfileForm(instance=request.user)
         password_change_form = CustomPasswordChangeForm(user=request.user)
-        return render(request, 'forms/edit_profile.html', {'form': form, 'password_change_form': password_change_form})
+        return render(request, 'forms/edit_profile.html', {
+            'form': form,
+            'password_change_form': password_change_form
+        })
 
     def post(self, request, *args, **kwargs):
         if 'change_password' in request.POST:
@@ -415,9 +418,15 @@ class UserUpdateProfileView(View):
                 messages.success(request, "Your password has been changed successfully. Please log in again.")
                 return redirect('login')  # Redirect to login or wherever you want
             else:
-                messages.error(request, "Please correct the errors in the password change form.")
-                form = UserUpdateProfileForm(instance=request.user)  # Reinitialize form to repopulate data
-                return render(request, 'forms/edit_profile.html', {'form': form, 'password_change_form': password_change_form})
+                for field in password_change_form:
+                    for error in field.errors:
+                        messages.error(request, error)  # Display individual field errors
+                # Reinitialize form to repopulate data
+                form = UserUpdateProfileForm(instance=request.user)
+                return render(request, 'forms/edit_profile.html', {
+                    'form': form,
+                    'password_change_form': password_change_form
+                })
         else:
             # Handle profile update
             form = UserUpdateProfileForm(request.POST, instance=request.user, files=request.FILES)
@@ -426,9 +435,15 @@ class UserUpdateProfileView(View):
                 messages.success(request, "Your profile has been updated successfully.")
                 return redirect('edit_profile')  # Redirect to the profile page or wherever you want
             else:
-                messages.error(request, "Please correct the errors in the profile form.")
-                password_change_form = CustomPasswordChangeForm(user=request.user)  # Reinitialize form to repopulate data
-                return render(request, 'forms/edit_profile.html', {'form': form, 'password_change_form': password_change_form})
+                for field in form:
+                    for error in field.errors:
+                        messages.error(request, error)  # Display individual field errors
+                # Reinitialize password change form to repopulate data
+                password_change_form = CustomPasswordChangeForm(user=request.user)
+                return render(request, 'forms/edit_profile.html', {
+                    'form': form,
+                    'password_change_form': password_change_form
+                })
 class ChangePasswordView(LoginRequiredMixin, View):
     form_class = CustomPasswordChangeForm
     template_name = "admin_templates/change_password.html"

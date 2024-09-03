@@ -87,15 +87,7 @@
                 <form method="post" action="{% url 'edit_profile' %}">
                     {% csrf_token %}
                     {{ password_change_form.as_p }}
-                    {% if password_change_form.errors %}
-                        <div class="text-danger">
-                            {% for field, errors in password_change_form.errors.items %}
-                                {% for error in errors %}
-                                    <p>{{ error }}</p>
-                                {% endfor %}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                   
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary" name="change_password">Change Password</button>
