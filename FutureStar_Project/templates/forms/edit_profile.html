@@ -86,8 +86,21 @@
                 <!-- Password Change Form -->
                 <form method="post" action="{% url 'edit_profile' %}">
                     {% csrf_token %}
-                    {{ password_change_form.as_p }}
-                   
+                    <div class="mb-3">
+                        <label for="{{ password_change_form.old_password.id_for_label }}" class="form-label">Old Password</label>
+                        {{ password_change_form.old_password }}
+                       
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ password_change_form.new_password1.id_for_label }}" class="form-label">New Password</label>
+                        {{ password_change_form.new_password1 }}
+                      
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ password_change_form.new_password2.id_for_label }}" class="form-label">Confirm New Password</label>
+                        {{ password_change_form.new_password2 }}
+                       
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary" name="change_password">Change Password</button>

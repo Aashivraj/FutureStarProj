@@ -388,16 +388,13 @@ class ToggleUserStatusView(View):
 class UserProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        form = UserProfileForm(instance=user)
-        return render(request, 'forms/user_profile.html', {'user': user, 'form': form})
+        
+        return render(request, 'forms/user_profile.html', {'user': user})
 
     def post(self, request):
         user = request.user
-        form = UserProfileForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('user_profile')  # Redirect to the profile page after saving
-        return render(request, 'forms/user_profile.html', {'user': user, 'form': form})
+      
+        return render(request, 'forms/user_profile.html', {'user': user})
 @method_decorator(login_required, name='dispatch')
 class UserUpdateProfileView(View):
     def get(self, request, *args, **kwargs):

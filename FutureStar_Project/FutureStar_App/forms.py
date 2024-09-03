@@ -123,10 +123,10 @@ class CustomPasswordChangeForm(PasswordChangeForm):
     )
     
 
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['profile_picture','card_header'] 
+# class UserProfileForm(forms.ModelForm):
+#     class Meta:
+#         model = User
+#         fields = ['profile_picture','card_header'] 
 
 
 # Gender Form
