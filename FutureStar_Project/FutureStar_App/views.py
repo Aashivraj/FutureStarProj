@@ -396,6 +396,7 @@ class UserProfileView(LoginRequiredMixin, View):
      
         return render(request, 'forms/user_profile.html', {'user': user} )
 
+
 @method_decorator(login_required, name='dispatch')
 class UserUpdateProfileView(View):
     def get(self, request, *args, **kwargs):
@@ -427,20 +428,24 @@ class UserUpdateProfileView(View):
         else:
             # Handle profile update
             user = request.user
-            old_profile_picture = user.profile_picture 
-            old_card_header=user.card_header # Assuming `profile_picture` is a field in your User model
+            old_profile_picture = user.profile_picture
+            old_card_header = user.card_header
+
             form = UserUpdateProfileForm(request.POST, instance=user, files=request.FILES)
             if form.is_valid():
-                if 'profile_picture' in request.FILES and old_profile_picture:
-                    # Remove the old image if a new one is uploaded
-                    old_image_path = os.path.join(settings.MEDIA_ROOT, str(old_profile_picture))
-                    if os.path.isfile(old_image_path):
-                        os.remove(old_image_path)
-                if 'card_header' in request.FILES and old_profile_picture:
-                    # Remove the old image if a new one is uploaded
-                    old_image_path = os.path.join(settings.MEDIA_ROOT, str(old_card_header))
-                    if os.path.isfile(old_image_path):
-                        os.remove(old_image_path)
+                # Handle profile picture update
+                if 'profile_picture' in request.FILES:
+                    if old_profile_picture and os.path.isfile(os.path.join(settings.MEDIA_ROOT, str(old_profile_picture))):
+                        os.remove(os.path.join(settings.MEDIA_ROOT, str(old_profile_picture)))
+                elif 'profile_picture-clear' in request.POST:
+                    user.profile_picture = None
+
+                # Handle card header update
+                if 'card_header' in request.FILES:
+                    if old_card_header and os.path.isfile(os.path.join(settings.MEDIA_ROOT, str(old_card_header))):
+                        os.remove(os.path.join(settings.MEDIA_ROOT, str(old_card_header)))
+                elif 'card_header-clear' in request.POST:
+                    user.card_header = None
 
                 user = form.save()
                 messages.success(request, "Your profile has been updated successfully.")

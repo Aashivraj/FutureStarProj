@@ -10,11 +10,19 @@
                 <div class="col-sm-12">
                     <div class="card hovercard text-center overflow-hidden">
                         <div class="cardheader">
-                            <img alt="Card Header" src="{{ user.card_header.url }}" class="card-header-img" onerror="this.src='{% static 'images/default_card_header.jpg' %}'">
+                            {% if user.card_header %}
+                                <img alt="Card Header" src="{{ user.card_header.url }}" class="card-header-img">
+                            {% else %}
+                                <img alt="Default Card Header" src="{% static 'assets/images/other-images/bg-profile.png' %}" class="card-header-img">
+                            {% endif %}
                         </div>
                         <div class="user-image">
                             <div class="avatar">
-                                <img alt="Profile Picture" src="{{ user.profile_picture.url }}" class="profile-pic-img" onerror="this.src='{% static 'images/default_profile_picture.jpg' %}'">
+                                {% if user.profile_picture %}
+                                    <img alt="Profile Picture" src="{{ user.profile_picture.url }}" class="profile-pic-img">
+                                {% else %}
+                                    <img alt="Default Profile Picture" src="{% static 'assets/images/user/7.jpg' %}" class="profile-pic-img">
+                                {% endif %}
                             </div>
                             <a href="{% url 'edit_profile' %}" class="icon-wrapper">
                                 <i class="icofont icofont-pencil-alt-5"></i>
