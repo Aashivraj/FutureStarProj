@@ -340,6 +340,18 @@ class System_Settings(LoginRequiredMixin, View):
         messages.success(request, "System settings updated successfully.")
         return redirect('home')
 
+class LogoutView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            logout(request)
+            messages.success(request, "Logout successful.")
+        else:
+            messages.error(request, "User not authenticated.")
+
+        # Redirect to the login page after logout (or any other desired URL)
+        return redirect("/")
+
 # Error 404 html
 class ErrorView(View):
     def get(self, request, *args, **kwargs):
@@ -349,7 +361,13 @@ class ErrorView(View):
     
 class Dashboard(View):
     def get(self, request, *args, **kwargs):
-        return render(request,'index.html')
+        context = {
+            'breadcrumb': {
+                'parent': 'Home',
+                'child': 'Home'
+        }
+        }
+        return render(request,'index.html',context)
 
     def post(self, request, *args, **kwargs):
         return render(request,'index.html')
