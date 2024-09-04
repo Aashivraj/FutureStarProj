@@ -477,33 +477,6 @@ class UserUpdateProfileView(View):
                     'form': form,
                     'password_change_form': password_change_form
                 })
-class ChangePasswordView(LoginRequiredMixin, View):
-    form_class = CustomPasswordChangeForm
-    template_name = "admin_templates/change_password.html"
-    success_url = reverse_lazy('login')  # Ensure this is the name of your login URL
-
-    def get(self, request, *args, **kwargs):
-        form = self.form_class(user=request.user)
-        return render(request, self.template_name, {"form": form})
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(user=request.user, data=request.POST)
-        if form.is_valid():
-            form.save()
-            logout(request)  # Log the user out
-            request.session.flush()  # Clear the session
-
-            # Clear cookies
-            response = redirect(self.success_url)
-            response.delete_cookie('sessionid')  # Replace 'sessionid' with your session cookie name if different
-            response.delete_cookie('csrftoken')  # If you want to clear the CSRF token cookie as well
-
-            messages.success(request, "Your password has been changed successfully. Please log in again.")
-            print("Redirecting to login page")  # Debug statement
-            return response
-        else:
-            messages.error(request, "Please correct the errors below.")
-            return render(request, self.template_name, {"form": form})
 
 # Gender CRUD Views
 class GenderCreateView(LoginRequiredMixin,View):
