@@ -63,7 +63,14 @@ class UserListView(View):
         User = get_user_model()  # Get the custom user model
         users = User.objects.all()
         roles = Role.objects.all()
-        return render(request, self.template_name, {'users': users, 'roles': roles})
+        return render(request, self.template_name,
+        {
+            'users': users, 
+            'roles': roles, 
+            'breadcrumb': {
+                'parent': 'Admin',
+                'child': 'User List'
+        }})
 
 
 class UserUpdateView(View):
@@ -164,7 +171,15 @@ class RoleListView(View):
 
     def get(self, request):
         roles = Role.objects.all()
-        return render(request, self.template_name, {'roles': roles})
+        return render(request, self.template_name,
+                       {
+                            'roles': roles,
+                            'breadcrumb': {
+                               'parent': 'Admin',
+                               'child': 'Role'
+                           }
+                           
+                           })
 
 
 # Category CRUD Views
@@ -227,7 +242,15 @@ class CategoryListView(View):
 
     def get(self, request):
         categories = Category.objects.all()
-        return render(request, self.template_name, {'categories': categories})
+        return render(request, self.template_name, 
+                      {
+                        'categories': categories,
+                         'breadcrumb': {
+                               'parent': 'Admin',
+                               'child': 'Category'
+                           }
+                           
+            })
 
 
 # System Settings View (Assuming there's only one instance)
@@ -242,6 +265,12 @@ class System_Settings(LoginRequiredMixin, View):
         return render(request, 'admin/system_settings.html', {
             'system_settings': system_settings,
             'MEDIA_URL': settings.MEDIA_URL,  # Pass MEDIA_URL to the template
+            
+            'breadcrumb': {
+                'parent': 'Admin',
+                'child': 'System Settings',
+                
+        }
         })
 
     def post(self, request, *args, **kwargs):
@@ -363,7 +392,7 @@ class Dashboard(View):
     def get(self, request, *args, **kwargs):
         context = {
             'breadcrumb': {
-                'parent': 'Home',
+                'parent': 'Admin',
                 'child': 'Home'
         }
         }
@@ -406,8 +435,15 @@ class ToggleUserStatusView(View):
 class UserProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
+        context = {
+            'user': user,
+            'breadcrumb': {
+                'parent': 'Acccount',
+                'child': 'Profile'
+
+            }}
        
-        return render(request, 'forms/user_profile.html', {'user': user})
+        return render(request, 'forms/user_profile.html', context)
 
     def post(self, request):
         user = request.user
@@ -422,8 +458,17 @@ class UserUpdateProfileView(View):
         password_change_form = CustomPasswordChangeForm(user=request.user)
         return render(request, 'forms/edit_profile.html', {
             'form': form,
-            'password_change_form': password_change_form
-        })
+            'password_change_form': password_change_form,
+            'breadcrumb': {
+                'parent': 'Acccount',
+                'child': 'Edit Profile'
+            }
+
+           
+            
+        }
+        
+        )
 
     def post(self, request, *args, **kwargs):
         if 'change_password' in request.POST:
@@ -531,7 +576,15 @@ class GenderListView(LoginRequiredMixin,View):
 
     def get(self, request):
         genders = UserGender.objects.all()
-        return render(request, self.template_name, {'genders': genders})
+        return render(request, self.template_name, 
+                      {
+                          'genders': genders,
+                          'breadcrumb': {
+                                          'parent': 'General Settings',
+                                          'child': 'Gender'
+                                          }
+
+                          })
     
 
 
@@ -589,7 +642,15 @@ class GameTypeListView(LoginRequiredMixin, View):
 
     def get(self, request):
         gametypes = GameType.objects.all()
-        return render(request, self.template_name, {'gametypes': gametypes})
+        return render(request, self.template_name, 
+                      {
+                          'gametypes': gametypes,
+                          'breadcrumb': {
+                                          'parent': 'General Settings',
+                                          'child': 'Game Type'
+                                          }
+                          
+                          })
 
 
 
@@ -646,7 +707,15 @@ class FieldCapacityListView(LoginRequiredMixin, View):
 
     def get(self, request):
         fieldcapacitys = FieldCapacity.objects.all()
-        return render(request, self.template_name, {'fieldcapacitys': fieldcapacitys})
+        return render(request, self.template_name, 
+                      {
+                          'fieldcapacitys': fieldcapacitys,
+                          'breadcrumb': {
+                                          'parent': 'General Settings',
+                                          'child': 'Field Capacity'
+                                          }
+                          
+                          })
     
 
 
@@ -703,7 +772,15 @@ class GroundMaterialListView(LoginRequiredMixin, View):
 
     def get(self, request):
         groundmaterials = GroundMaterial.objects.all()
-        return render(request, self.template_name, {'groundmaterials': groundmaterials})
+        return render(request, self.template_name, 
+                      {
+                          'groundmaterials': groundmaterials,
+                          'breadcrumb': {
+                                          'parent': 'General Settings',
+                                          'child': 'Ground Material'
+                                          }
+
+                          })
     
 
 
@@ -760,7 +837,14 @@ class TournamentStyleListView(LoginRequiredMixin, View):
 
     def get(self, request):
         tournamentstyles = TournamentStyle.objects.all()
-        return render(request, self.template_name, {'tournamentstyles': tournamentstyles})
+        return render(request, self.template_name, 
+                      {
+                          'tournamentstyles': tournamentstyles,
+                          'breadcrumb': {
+                                          'parent': 'General Settings',
+                                          'child': 'Tournaments'
+                                          }
+                          })
 
 
 
@@ -817,4 +901,11 @@ class EventTypeListView(LoginRequiredMixin, View):
 
     def get(self, request):
         eventtypes = EventType.objects.all()
-        return render(request, self.template_name, {'eventtypes': eventtypes})
+        return render(request, self.template_name, 
+                      {
+                          'eventtypes': eventtypes,
+                          'breadcrumb': {
+                                          'parent': 'General Settings',
+                                          'child': 'Event Types'
+                                          }
+                          })
