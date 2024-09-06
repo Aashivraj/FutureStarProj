@@ -121,8 +121,16 @@
                   </ul>
                 </div>
               </li> --> 
-              <li class="profile-nav onhover-dropdown pe-0 py-0">
-                <div class="media profile-media"><img class="b-r-10 profile-img" src="{{ user.profile_picture.url }}" alt="" style="width: 35px; height: 35px;">
+              
+                <li class="profile-nav onhover-dropdown pe-0 py-0">
+                  {% if user.profile_picture %}
+                  <div class="media profile-media"><img class="b-r-10 profile-img" src="{{ user.profile_picture.url }}" alt="" style="width: 35px; height: 35px;">
+                  
+              {% else %}
+                  <div class="media profile-media"><img class="b-r-10 profile-img" src="{% static 'assets/images/user/user.png' %}" alt="" style="width: 35px; height: 35px;">
+  
+                  <!-- <img alt="Default Profile Picture" src="{% static 'assets/images/user/user.png' %}" class="profile-pic-img" style="width: 35px; height: 35px;"> -->
+              {% endif %}
 
                   {% if request.user.is_authenticated %}
                     <div class="media-body">{{user.username}}<span></span>

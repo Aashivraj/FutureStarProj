@@ -56,7 +56,7 @@ class LoginView(View):
         return render(request, self.template_name, {'form': form})
 
 #User Crud
-class UserListView(View):
+class UserListView(LoginRequiredMixin, View):
     template_name = 'admin/user.html'
 
     def get(self, request):
@@ -73,7 +73,7 @@ class UserListView(View):
         }})
 
 
-class UserUpdateView(View):
+class UserUpdateView(LoginRequiredMixin,View):
     template_name = 'forms/user_form.html'
 
     def get(self, request, pk):
@@ -93,7 +93,7 @@ class UserUpdateView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class UserDeleteView(View):
+class UserDeleteView(LoginRequiredMixin,View):
     def get(self, request, pk):
         user = get_object_or_404(User, pk=pk)
         user.delete()
@@ -109,7 +109,7 @@ class UserDeleteView(View):
 
 
 # Role CRUD Views
-class RoleCreateView(View):
+class RoleCreateView(LoginRequiredMixin,View):
     def get(self, request):
         form = RoleForm()
         return render(request, 'forms/role_form.html', {'form': form})
@@ -128,7 +128,7 @@ class RoleCreateView(View):
         else:
             messages.error(request, 'There was an error creating the role. Please ensure all fields are filled out correctly.')
         return redirect('role_list') 
-class RoleUpdateView(View):
+class RoleUpdateView(LoginRequiredMixin,View):
     template_name = 'forms/role_form.html'
 
     def get(self, request, pk):
@@ -153,7 +153,7 @@ class RoleUpdateView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class RoleDeleteView(View):
+class RoleDeleteView(LoginRequiredMixin,View):
     def get(self, request, pk):
         role = get_object_or_404(Role, pk=pk)
         role.delete()
@@ -166,7 +166,7 @@ class RoleDeleteView(View):
         messages.success(request, 'Role was successfully deleted.')
         return redirect('role_list')
 
-class RoleListView(View):
+class RoleListView(LoginRequiredMixin,View):
     template_name = 'admin/role.html'
 
     def get(self, request):
@@ -184,7 +184,7 @@ class RoleListView(View):
 
 # Category CRUD Views
 
-class CategoryCreateView(View):
+class CategoryCreateView(LoginRequiredMixin,View):
     def get(self, request):
         form = CategoryForm()
         return render(request, 'forms/category_form.html', {'form': form})
@@ -204,7 +204,7 @@ class CategoryCreateView(View):
             messages.error(request, 'There was an error creating the category. Please ensure all fields are filled out correctly.')
         return redirect('category_list')
 
-class CategoryUpdateView(View):
+class CategoryUpdateView(LoginRequiredMixin,View):
     template_name = 'forms/category_form.html'
 
     def get(self, request, pk):
@@ -224,7 +224,7 @@ class CategoryUpdateView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class CategoryDeleteView(View):
+class CategoryDeleteView(LoginRequiredMixin,View):
     def get(self, request, pk):
         category = get_object_or_404(Category, pk=pk)
         category.delete()
@@ -237,7 +237,7 @@ class CategoryDeleteView(View):
         messages.success(request, 'Category was successfully deleted.')
         return redirect('category_list')
 
-class CategoryListView(View):
+class CategoryListView(LoginRequiredMixin,View):
     template_name = 'admin/category.html'
 
     def get(self, request):
@@ -388,7 +388,7 @@ class ErrorView(View):
     
 
     
-class Dashboard(View):
+class Dashboard(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         context = {
             'breadcrumb': {
@@ -401,7 +401,7 @@ class Dashboard(View):
     def post(self, request, *args, **kwargs):
         return render(request,'index.html')
         
-class ToggleUserStatusView(View):
+class ToggleUserStatusView(LoginRequiredMixin,View):
     def post(self, request, pk, *args, **kwargs):
         user = get_object_or_404(User, pk=pk)
         new_status = request.POST.get('status')
